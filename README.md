@@ -1,4 +1,69 @@
-# OpenAI Chat Completion API Python-Flask Example
+# Model Workbench
+
+Compare chat models on your computer with Ollama or connect a compatible Chat
+Completions API. Choose **Stream text** to read an answer as the model generates
+it, or **Full response** to see it all at once. You can switch modes between
+messages in the same conversation.
+
+![The same bookshop naming prompt sent to Qwen with streaming and SmolLM2 with a full response](docs/workbench-demo.gif)
+
+In the recording, both models received “Suggest three short names for a
+neighborhood bookshop.” The times and token counts are from those two local runs.
+
+| Model | Response mode | First suggestion | Elapsed | Input / output tokens |
+| --- | --- | --- | ---: | ---: |
+| Qwen2.5 1.5B | Stream text | Book Haven | 0.55 s | 40 / 19 |
+| SmolLM2 135M | Full response | The Book Thief | 2.02 s | 40 / 107 |
+
+Each provider and model has its own conversation in the browser tab. **Export
+JSON** downloads the completed turns and their measurements. Reloading the tab
+clears its history.
+
+## Run the workbench
+
+With Python 3.10+ and a running Ollama installation:
+
+```sh
+git clone https://github.com/heyfoz/model-workbench.git
+cd model-workbench
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r server/requirements-harness.txt
+ollama pull smollm2:135m
+python server/harness.py
+```
+
+On Windows, activate with `.venv\Scripts\Activate.ps1` in PowerShell.
+Open [the local workbench](http://127.0.0.1:4397). The Ollama picker discovers
+installed chat models. SmolLM2 135M is a small first-run example. An existing
+local chat model works too. To compare it with a larger model, run
+`ollama pull qwen2.5:1.5b`, choose **Refresh models**, and send the same
+question to each model.
+
+## Use a second API
+
+To try both HTTP interfaces against the same local model, start the server with:
+
+```sh
+CHAT_API_BASE=http://127.0.0.1:11434/v1 CHAT_API_MODEL=smollm2:135m python server/harness.py
+```
+
+Send a prompt under **Ollama**, then select **Chat Completions API** and send
+the same prompt. Switch back to see the first conversation. The two routes
+use Ollama's native `/api/chat` and the compatible `/v1/chat/completions`
+endpoint respectively. [Ollama compatibility guide](https://docs.ollama.com/api/openai-compatibility)
+
+To use a different service, set `CHAT_API_BASE` to its versioned base URL and
+`CHAT_API_MODEL` to a chat model served there, then restart the workbench.
+Set `CHAT_API_KEY` in the server environment when that service needs bearer
+authentication. For example, NVIDIA's hosted base is
+`https://integrate.api.nvidia.com/v1`. The provider picker identifies the
+configured host. Each request sends that conversation to the selected provider.
+Only the Flask process reads the key.
+
+Run the harness tests with `python -m unittest discover -s tests`.
+
+## Original OpenAI Flask and CLI examples
 
 <div align="center">
   <video controls src="https://github.com/user-attachments/assets/0632a683-8c24-47a8-a3b9-7f2b0087e5e3" type="video/mp4">>
