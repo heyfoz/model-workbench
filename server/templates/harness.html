@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model Workbench</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('static', filename='harness.css') }}">
+  <script defer src="{{ url_for('static', filename='harness.js') }}"></script>
+</head>
+<body>
+  <header><div class="wordmark"><i aria-hidden="true">M</i>Model Workbench</div><span>Chat harness</span></header>
+  <main>
+    <aside>
+      <h2>Connection</h2>
+      <label for="provider">Provider</label><select id="provider" disabled></select>
+      <label for="model">Model</label><select id="model" disabled></select>
+      <p class="route" id="location"></p>
+      <button class="link" id="refresh" type="button">Refresh models</button>
+      <div class="usage">
+        <h2>Session usage</h2>
+        <dl><dt>Replies</dt><dd id="replies">0</dd><dt>Input tokens</dt><dd id="tokens-in">—</dd><dt>Output tokens</dt><dd id="tokens-out">—</dd></dl>
+      </div>
+    </aside>
+    <section aria-labelledby="title">
+      <div class="heading"><h1 id="title">Conversation</h1><div class="actions">
+        <button class="secondary" id="export" disabled>Export JSON</button>
+        <button class="secondary" id="clear" disabled>New chat</button>
+      </div></div>
+      <div id="turns" role="log" aria-live="polite"></div>
+      <div id="empty"><h2>Try a prompt</h2>
+        <button class="example" id="example">Explain a database index in one sentence. <span aria-hidden="true">↗</span></button>
+      </div>
+      <p id="status" role="status"></p>
+      <form id="composer">
+        <fieldset id="delivery"><legend>Response mode</legend>
+          <label><input type="radio" name="delivery" value="stream" checked> Stream text</label>
+          <label><input type="radio" name="delivery" value="full"> Full response</label>
+        </fieldset>
+        <label for="prompt">Your message</label>
+        <textarea id="prompt" rows="3" placeholder="Message the selected model…" required></textarea>
+        <div class="compose-actions"><span>⌘ / Ctrl + Enter to send</span><button id="send" disabled>Send message <b aria-hidden="true">↑</b></button></div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

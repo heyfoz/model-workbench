@@ -1,1 +1,7 @@
 myenv
+.venv/
+__pycache__/
+.env
+.env.*
+flask_session/
+chat_history/
